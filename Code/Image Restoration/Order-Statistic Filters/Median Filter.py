@@ -1,7 +1,7 @@
 import cv2.cv2 as cv2
 import numpy as np
 
-flower = cv2.imread('./Sample Images/flowerPepper.jpg')
+flower = cv2.imread('../../Sample Images/flowerSalt.jpg')
 flower = cv2.resize(flower, (800, 600))
 
 # filter = np.array([(1, 1, 1), (1, 1, 1), (1, 1, 1)]) * (1 / 9)  # filter 3x3
@@ -24,11 +24,10 @@ for i in range(img_shape[0]):
 
 print(new_img_arr)
 
-Q = 0.5
 for i in range(img_shape[0]):
     for j in range(img_shape[1]):
         temp = new_img_arr[i:i + filter_shape[0], j:j + filter_shape[1]]
-        res = (np.sum(temp ** (Q + 1))) / (np.sum(temp ** Q))
+        res = np.median(temp)
         flower_gray[i, j] = res
 
 cv2.imshow("After filter", flower_gray)

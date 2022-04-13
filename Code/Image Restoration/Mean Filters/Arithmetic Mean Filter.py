@@ -1,7 +1,9 @@
 import cv2.cv2 as cv2
 import numpy as np
+from PIL import Image
+from IPython.display import display
 
-flower = cv2.imread('./Sample Images/flowerPepper.jpg')
+flower = cv2.imread('../../Sample Images/flowerSalt.jpg')
 flower = cv2.resize(flower, (800, 600))
 
 # filter = np.array([(1, 1, 1), (1, 1, 1), (1, 1, 1)]) * (1 / 9)  # filter 3x3
@@ -27,7 +29,7 @@ print(new_img_arr)
 for i in range(img_shape[0]):
     for j in range(img_shape[1]):
         temp = new_img_arr[i:i + filter_shape[0], j:j + filter_shape[1]]
-        res = np.amax(temp)
+        res = np.sum(temp * filter)
         flower_gray[i, j] = res
 
 cv2.imshow("After filter", flower_gray)
