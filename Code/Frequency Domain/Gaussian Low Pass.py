@@ -74,7 +74,7 @@ def frequency_filter(img):
     new_img_arr[:M, :N] = img
 
     # Gaussian low pass filter
-    D0 = 10
+    D0 = 30
     H = gaussian_lowpass(D0, P, Q)
     print(H)
 
@@ -92,7 +92,7 @@ def frequency_filter(img):
     # reverse transform
     g = IDFT(G)
 
-    g = np.asarray(g.real)
+    g = g.real
     for i in range(P):
         for j in range(Q):
             g[i, j] = g[i, j] * np.power(-1, i + j)
@@ -100,7 +100,7 @@ def frequency_filter(img):
     # extract mxn region
     g = g[:M, :N]
 
-    return g
+    return g.astype(np.uint8)
 
 
 if __name__ == '__main__':
