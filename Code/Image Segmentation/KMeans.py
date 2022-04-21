@@ -1,12 +1,4 @@
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import division
-
-import sys
-import matplotlib
 import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import axes3d
 from tqdm import tqdm
 
 import cv2.cv2 as cv2
@@ -21,7 +13,7 @@ def init_centroid(img, k):
         rand_num = np.random.randint(r)
         centroid_arr[i] = img[rand_num]
 
-    return centroid_arr
+    return centroid_arr.astype(np.uint8)
 
 
 def distance(x1, x2):
@@ -40,7 +32,7 @@ def choosing_cluster(img, centroid):
     dist = distance(img, centroid)
     cluster_idx = np.argmin(dist, axis=1)
 
-    return cluster_idx
+    return cluster_idxx
 
 
 def update_centroid(old_centroid, cluster_idx, img):
@@ -71,6 +63,6 @@ if __name__ == '__main__':
         indices_current_cluster = np.where(cluster_idx == i)[0]
         update_img_arr[indices_current_cluster] = centroid[i]
 
-    update_img_arr = update_img_arr.reshape(img_shape[0], img_shape[1], img_shape[2])
+    update_img_arr = update_img_arr.reshape(img_shape)
     cv2.imshow("After filter", update_img_arr)
     cv2.waitKey(0)

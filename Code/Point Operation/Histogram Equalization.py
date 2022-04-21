@@ -6,13 +6,19 @@ import matplotlib.pyplot as plt
 def hist_equalize(img):
     hist, _ = np.histogram(img, 256, [0, 255])
 
+    # normalized histogram
+    hist = hist / (img.shape[0] * img_shape[1])
+
+    # cumulative distribution function
     cdf = np.cumsum(hist)
 
+    # mask all 0 values in cumulative sum array
     cdf_m = np.ma.masked_equal(cdf, 0)
-    num_cdf_m = (cdf_m - cdf_m.min()) * 255
-    den_cdf_m = (cdf_m.max() - cdf_m.min())
-    cdf_m = num_cdf_m / den_cdf_m
 
+    # calculate K: K(i)  = (Z(i) - min(Z)) * 255 / (max(Z) - min(Z))
+    cdf_m = (cdf_m - cdf_m.min()) * 255 / (cdf_m.max() - cdf_m.min())
+
+    # masked places are 0
     return np.ma.filled(cdf_m, 0).astype(np.uint8)
 
 
@@ -42,6 +48,6 @@ if __name__ == "__main__":
 
     ax1.set_title("After")
     ax2.set_title("Before")
-    
+
     plt.show();
     cv2.waitKey(0)

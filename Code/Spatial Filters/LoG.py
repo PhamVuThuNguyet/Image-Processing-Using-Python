@@ -24,8 +24,8 @@ def log_kernel(size, sigma):
         for j in range(-x, x + 1):
             norm = math.pow(i, 2) + math.pow(j, 2)
             log_kernel[i + x, j + x] = (-1 / (math.pi * math.pow(sigma, 4))) * \
-                                        (1 - (norm / (2 * math.pow(sigma, 2)))) * \
-                                        math.exp(-norm / (2 * math.pow(sigma, 2)))
+                                       (1 - (norm / (2 * math.pow(sigma, 2)))) * \
+                                       math.exp(-norm / (2 * math.pow(sigma, 2)))
     return log_kernel
 
 

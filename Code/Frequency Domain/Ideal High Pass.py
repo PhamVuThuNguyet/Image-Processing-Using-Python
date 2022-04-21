@@ -5,26 +5,45 @@ import numpy as np
 import math
 
 
-def DFT(img):
-    M, N = img.shape
-    L = len(img)
-
-    temp = np.zeros((M, N), complex)
-    new_img_arr = np.zeros((M, N), complex)
-
-    m = np.arange(M)
-    n = np.arange(N)
-    x = m.reshape((M, 1))
-    y = n.reshape((N, 1))
-
-    for row in range(M):
-        M1 = np.exp(-2j * np.pi * (n * y) / L)
-        temp[row] = np.dot(M1, img[row])
-    for col in range(N):
-        M2 = np.exp(-2j * np.pi * (m * x) / L)
-        new_img_arr[:, col] = np.dot(M2, temp[:, col])
-
+def DFT_1D(img):
+    M = len(img)
+    new_img_arr = np.zeros(M, dtype=complex)
+    for i in range(M):
+        for j in range(M):
+            new_img_arr[i] += (img[j] * np.exp(-1j * 2 * np.pi * i * j / M))
     return new_img_arr
+
+
+def inverseDFT_1D(img):
+    M = len(img)
+    new_img_arr = np.zeros(M, dtype=complex)
+    for i in range(M):
+        for j in range(M):
+            new_img_arr[i] += (img[j] * np.exp(1j * 2 * np.pi * i * j / M))
+        new_img_arr[i] /= M
+    return new_img_arr
+
+
+def inverseDFT_2D(img):
+    P, Q = img.shape
+
+    for i in range(P):
+        img[i] = inverseDFT_1D(img[i])
+    for j in range(Q):
+        img[:, j] = inverseDFT_1D(img[:, j])
+
+    return img
+
+
+def DFT_2D(img):
+    P, Q = img.shape
+
+    for i in range(P):
+        img[i] = DFT_1D(img[i])
+    for j in range(Q):
+        img[:, j] = DFT_1D(img[:, j])
+
+    return img
 
 
 def ideal_highpass(D0, P, Q):
@@ -41,30 +60,6 @@ def ideal_highpass(D0, P, Q):
     return H
 
 
-def IDFT(img):
-    M, N = img.shape
-    L = len(img)
-
-    temp = np.zeros((M, N), complex)
-    new_img_arr = np.zeros((M, N), complex)
-
-    m = np.arange(M)
-    n = np.arange(N)
-    x = m.reshape((M, 1))
-    y = n.reshape((N, 1))
-
-    for row in range(M):
-        M1 = np.exp(2j * np.pi * (n * y) / L)
-        temp[row] = np.dot(M1, img[row])
-    for col in range(N):
-        M2 = np.exp(2j * np.pi * (m * x) / L)
-        new_img_arr[:, col] = np.dot(M2, temp[:, col])
-
-    new_img_arr = new_img_arr / L
-
-    return new_img_arr
-
-
 def frequency_filter(img):
     M, N = img.shape
 
@@ -76,24 +71,24 @@ def frequency_filter(img):
     new_img_arr = np.zeros((P, Q))
     new_img_arr[:M, :N] = img
 
-    # Ideal low pass filter
-    D0 = 10
-    H = ideal_highpass(D0, P, Q)
-    print(H)
-
     # center the Fourier transform
     for i in range(P):
         for j in range(Q):
             new_img_arr[i, j] = new_img_arr[i, j] * np.power(-1, i + j)
 
     # DFT
-    F = DFT(new_img_arr)
+    F = DFT_2D(new_img_arr)
+
+    # Ideal high pass filter
+    D0 = 10
+    H = ideal_highpass(D0, P, Q)
+    print(H)
 
     # Calculate the product
     G = np.multiply(H, F)
 
     # reverse transform
-    g = IDFT(G)
+    g = inverseDFT_2D(G)
 
     g = np.asarray(g.real)
     for i in range(P):

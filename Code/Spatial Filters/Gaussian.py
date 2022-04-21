@@ -36,6 +36,7 @@ def gaussian(img, new_img_arr, filter):
             res = np.sum(temp * filter)
             img[i, j] = res
 
+
     return img.astype(np.uint8)
 
 
