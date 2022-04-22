@@ -32,7 +32,7 @@ def choosing_cluster(img, centroid):
     dist = distance(img, centroid)
     cluster_idx = np.argmin(dist, axis=1)
 
-    return cluster_idxx
+    return cluster_idx
 
 
 def update_centroid(old_centroid, cluster_idx, img):
@@ -45,13 +45,13 @@ def update_centroid(old_centroid, cluster_idx, img):
 
 
 if __name__ == '__main__':
-    img = cv2.imread('../Sample Images/img_12.png')
+    img = cv2.imread('../Sample Images/img_4.png')
     img = cv2.resize(img, (800, 600))
     img_shape = img.shape
     cv2.imshow("Before filter", img)
     img = img.reshape(img_shape[0] * img_shape[1], img_shape[2])
 
-    k = 3
+    k = 2
     centroid = init_centroid(img, k)
 
     for i in range(100):
